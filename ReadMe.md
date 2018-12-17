@@ -1,4 +1,4 @@
-Incremental parser performance benchmark
+# Incremental parser performance benchmarks
 
 This experiment requires the Java 1.5 Standard Library which can be downloaded
 from http://www.oracle.com/technetwork/java/archive-139210.html. The library can

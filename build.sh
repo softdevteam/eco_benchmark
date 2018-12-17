@@ -19,6 +19,8 @@ if [ -f performance.pdf ]; then
 fi
 
 cp benchmark.py eco/lib/eco/
+cp traditional.py eco/lib/eco/
 cd eco/lib/eco/
 find $experimentdir/javastdlib5/ -iname \*.java -exec ./benchmark.py {} \;
+find $experimentdir/javastdlib5/ -iname \*.java -exec ./traditional.py {} \;
 mv results.csv $experimentdir/
