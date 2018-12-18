@@ -23,7 +23,8 @@ class Parser(object):
                 self.state = elem.action
                 self.stack.append((la, self.state))
                 try:
-                    la = Terminal(tokens.next()[1])
+                    token = tokens.next()
+                    la = Terminal(token[1])
                 except StopIteration:
                     la = FinishSymbol()
             elif type(elem) is Reduce:
@@ -37,6 +38,7 @@ class Parser(object):
             elif type(elem) is Accept:
                 return True
             else:
+                print("Could not parse", token)
                 return False
 
 if __name__ == "__main__":
@@ -50,15 +52,28 @@ if __name__ == "__main__":
     lexer = inclexer.lexer
     stable = incparser.syntaxtable
 
+    source = source.replace("\n", "\r") # Eco grammar compatiblity fix
+
     timings = []
     r = re.compile("=")
     delta = 0
-    for m in r.finditer(source):
+
+    # initial parse
+    tokens = lexer.lex(source)
+    parser = Parser(stable)
+    start = time()
+    status = parser.parse(tokens)
+    end = time()
+    timings.append(str(end-start))
+
+    for m in []:#r.finditer(source):
         # Edit file by inserting `1+` after every `=`
         pos = m.start() + 1 + delta
         source = source[:pos] + "1+" + source[pos:]
 
+        lstart = time()
         tokens = lexer.lex(source)
+        lend = time()
         parser = Parser(stable)
         start = time()
         status = parser.parse(tokens)
@@ -72,3 +87,5 @@ if __name__ == "__main__":
         with open("results_t.csv", "a+") as f:
             f.write("{} {} {}".format(filename, filesize, ",".join(timings)))
             f.write("\n")
+    else:
+        print("No results.")

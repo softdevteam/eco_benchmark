@@ -1,0 +1,31 @@
+diff --git a/lib/eco/treelexer/lexer.py b/lib/eco/treelexer/lexer.py
+index 1f78148..5b7d14c 100644
+--- a/lib/eco/treelexer/lexer.py
++++ b/lib/eco/treelexer/lexer.py
+@@ -475,16 +475,21 @@ class Lexer(object):
+         while True:
+             lookahead = 0
+             oldpos = self.pos
++            longest = ("", None, 0, -1)
+             for p, n in self.patterns:
+-                if pm.match(p, text[self.pos:]):
++                if pm.match(p, text[self.pos:]): # find longest match
+                     lookahead = max(pm.la, lookahead)
+                     value = text[self.pos:self.pos + pm.pos]
+-                    lookahead = lookahead - len(value)
+-                    result.append((value, n, lookahead))
+-                    self.pos += pm.pos
+-                    lookahead = 0
++                    if len(value) > len(longest[0]):
++                        lookahead = lookahead - len(value)
++                        longest = (value, n, pm.pos, lookahead)
++                        lookahead = 0
+                 else:
+                     lookahead = max(pm.la, lookahead)
++            if longest[0]:
++                result.append((longest[0], longest[1], longest[3]))
++            self.pos += longest[2]
++            lookahead = 0
+             if self.pos == oldpos:
+                 # no more matches
+                 if self.pos < len(text):
