@@ -60,11 +60,14 @@ if __name__ == "__main__":
 
     # initial parse
     tokens = lexer.lex(source)
-    parser = Parser(stable)
-    start = time()
-    status = parser.parse(tokens)
-    end = time()
-    timings.append(str(end-start))
+    for i in range(1, 6):
+        start = time()
+        parser = Parser(stable)
+        status = parser.parse(tokens)
+        end = time()
+        if status:
+            timings.append(str(end-start))
+            print(end-start)
 
     for m in []:#r.finditer(source):
         # Edit file by inserting `1+` after every `=`
